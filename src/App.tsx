@@ -1,26 +1,46 @@
-import React from 'react';
-import './App.css';
+import { Link } from '@material-ui/core';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import './App.scss';
+import { Menubar } from './components/Menubar';
+import { Home } from './components/sessions/Home';
+import { Login } from './components/sessions/Login';
+import { Events } from './components/tennis/Events';
+import { authRef } from './firebase';
 
-export class App extends React.Component<any, any> {
+export const App = (props: any) => {
 
-  constructor() {
-    super({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    /*const [isLoggedIn, setIsLoggedIn] = useState(false);
+  authRef.onAuthStateChanged((user) => {
+    return user ? setIsLoggedIn(true) : setIsLoggedIn(false);
+  });
 
-    authRef.onAuthStateChanged((user) => {
-      return user ? setIsLoggedIn(true) : setIsLoggedIn(false);
-    });
+  const signOut = () => {
+    authRef.signOut()
+      .catch((error) => {
+        setIsLoggedIn(false);
+        console.log('Forced log off');
+      });
+  };
 
-    console.log('logged in?', isLoggedIn);*/
-  }
+  return (
+    <div className="App">
+      {!isLoggedIn ? (
+        <>
+          <Login/>
+        </>
+      ) : (
+        <>
+          <Menubar/>
+          <Router> {/*router-outlet*/}
+              <Route path={'/'} component={Home}/>
+              <Route path={'/events'} component={Events}/>
+          </Router>
+          <div><Link className={'footer'} onClick={signOut}>Sign out</Link></div>
+        </>
+      )}
+    </div>
+  );
 
-  public render() {
-    return (
-      <div className="App">
-        Hello World!
-      </div>
-    );
-  }
-
-}
+};

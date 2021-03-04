@@ -1,0 +1,10 @@
+Backend:
+	Websocket: 
+		- Register for notifications -> return unread notifications
+		- Unregister when window closed
+		- Send saved event draws
+	
+	Continuous loop:
+		- Get event draws (every 15 mins)
+		- Compare with existing (hash)
+		- Send notification if an event changed to those registered
