@@ -1,18 +1,14 @@
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import api from '../../api';
+import { getTennisEvents } from '../../services/service';
 
 export const Events = (props: any) => {
 
-  console.log('a');
-
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<any>([]);
 
   useEffect(() => {
-    axios
-      .get(api.backend.url)
-      .then(({data}) => {
-        setEvents(data);
+    getTennisEvents()
+      .then(response => {
+        setEvents(response.data as any[]);
       });
   }, []);
 

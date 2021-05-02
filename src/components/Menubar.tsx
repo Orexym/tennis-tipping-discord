@@ -7,13 +7,12 @@ import {
   makeStyles,
   Menu,
   MenuItem,
-  SwipeableDrawer,
   Theme,
   Toolbar
 } from '@material-ui/core';
-import { AccountCircle, ExpandMore, Notifications } from '@material-ui/icons';
-import React, { useState } from 'react';
-import { BrowserRouter, Link } from 'react-router-dom';
+import { AccountCircle, Notifications } from '@material-ui/icons';
+import React, { useEffect, useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { authRef } from '../firebase';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,6 +31,11 @@ const useStyles = makeStyles((theme: Theme) =>
         color: '#F26E01',
         background: 'transparent'
       }
+    },
+    activeLink: {
+      'button': {
+        color: '#F26E01'
+      }
     }
   })
 );
@@ -43,9 +47,11 @@ export const Menubar = (props: any) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
-  authRef.onAuthStateChanged((user) => {
-    return user ? setIsLoggedIn(true) : setIsLoggedIn(false);
-  });
+  useEffect(() => {
+    authRef.onAuthStateChanged((user) => {
+      return user ? setIsLoggedIn(true) : setIsLoggedIn(false);
+    });
+  }, []);
 
   const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (event && event.type === 'keydown' &&
@@ -66,74 +72,78 @@ export const Menubar = (props: any) => {
 
   return (
     <>
-      <IconButton onClick={toggleDrawer(true)}>
+      {/*<IconButton onClick={toggleDrawer(true)}>
         <ExpandMore/>
-      </IconButton>
-      <SwipeableDrawer
+      </IconButton>*/}
+      {/*<SwipeableDrawer
         anchor={'top'}
         open={drawerState}
         onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}>
-        <div className={classes.grow}>
+        onOpen={toggleDrawer(true)}>*/}
+      <div className={classes.grow}>
 
-          <AppBar position="sticky">
-            <Toolbar className={classes.menubar}>
-              <BrowserRouter>
-                <Button className={classes.menuItem} aria-label="home-menu"
-                        disableElevation disableTouchRipple disableRipple>
-                  Home
-                </Button>
-                <Link to={'/events'}>
-                  <Button className={classes.menuItem} aria-label="event-menu"
-                          disableElevation disableTouchRipple disableRipple>
-                    Events
-                  </Button>
-                </Link>
-              </BrowserRouter>
-              {/*<Typography variant="h6" className={classes.title}>
-              Photos
-            </Typography>*/}
-              <div className={classes.grow}/>
-              {isLoggedIn && (
-                <div>
-                  <IconButton aria-label="show 17 new notifications" color="inherit">
-                    <Badge badgeContent={17} color="secondary">
-                      <Notifications/>
-                    </Badge>
-                  </IconButton>
-                  <IconButton
-                    edge={'end'}
-                    aria-label="account of current user"
-                    aria-controls="menu-appbar"
-                    aria-haspopup="true"
-                    onClick={handleMenu}
-                    color="inherit"
-                  >
-                    <AccountCircle/>
-                  </IconButton>
-                  <Menu
-                    id="menu-appbar"
-                    anchorOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right'
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'right'
-                    }}
-                    open={open}
-                    onClose={handleClose}
-                  >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                  </Menu>
-                </div>
-              )}
-            </Toolbar>
-          </AppBar>
-        </div>
-      </SwipeableDrawer>
+        <AppBar position="sticky">
+          <Toolbar className={classes.menubar}>
+            <Link to={'/'}>
+              <Button aria-label={'home-menu'} className={classes.menuItem}
+                      disableElevation disableTouchRipple disableRipple>
+                Home
+              </Button>
+            </Link>
+            <Link to={'/events'}>
+              <Button aria-label={'event-menu'} className={classes.menuItem}
+                      disableElevation disableTouchRipple disableRipple>
+                Events
+              </Button>
+            </Link>
+            <NavLink to={'/test'} activeClassName={classes.activeLink}>
+              <Button aria-label={'test-menu'} className={classes.menuItem}
+                      disableElevation disableTouchRipple disableRipple>
+                Test
+              </Button>
+            </NavLink>
+            <div className={classes.grow}/>
+            {isLoggedIn && (
+              <div>
+                <IconButton aria-label="show 17 new notifications" color="inherit">
+                  <Badge badgeContent={17} color="secondary">
+                    <Notifications/>
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  edge={'end'}
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle/>
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right'
+                  }}
+                  open={open}
+                  anchorEl={anchorEl}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={handleClose}>Profile</MenuItem>
+                  <MenuItem onClick={handleClose}>My account</MenuItem>
+                </Menu>
+              </div>
+            )}
+          </Toolbar>
+        </AppBar>
+      </div>
+      {/*</SwipeableDrawer>*/}
     </>
   )
 }

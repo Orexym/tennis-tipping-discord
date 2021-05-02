@@ -1,24 +1,12 @@
-import { Button, Container, createStyles, Grid, makeStyles, TextField, Theme } from '@material-ui/core';
+import { Button, Container, Grid, TextField } from '@material-ui/core';
 import React, { FormEvent, useState } from 'react';
 import { authRef } from '../../firebase';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1
-    },
-    error: {
-      color: theme.palette.error.main
-    }
-  })
-);
-
 export const Login = (props: any) => {
-
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setSubmissionError] = useState(false);
-  const classes = useStyles();
 
 
   const handleSubmit = (e: FormEvent) => {
@@ -31,11 +19,13 @@ export const Login = (props: any) => {
   };
 
   return (
-    <div className={classes.root}>
-      <h2>Login</h2>
+    <div className={'login-root'}>
       <form onSubmit={handleSubmit} noValidate autoComplete={'off'}>
         <Container>
           <Grid container spacing={2} direction={'column'} alignItems={'stretch'} alignContent={'stretch'}>
+            <Grid item>
+              <h2>Login</h2>
+            </Grid>
             <Grid item>
               <TextField type="text" variant={'outlined'} color={'primary'} label={'Email'}
                          onChange={({target}) => setEmail(target.value)}>
@@ -55,7 +45,7 @@ export const Login = (props: any) => {
         </Container>
 
         {error && (
-          <div className={classes.error}>Incorrect username or password</div>
+          <div className={'error'}>Incorrect username or password</div>
         )}
       </form>
     </div>

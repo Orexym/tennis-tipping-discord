@@ -1,6 +1,6 @@
-import { Link } from '@material-ui/core';
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Link as MatLink } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.scss';
 import { Menubar } from './components/Menubar';
 import { Home } from './components/sessions/Home';
@@ -11,10 +11,16 @@ import { authRef } from './firebase';
 export const App = (props: any) => {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const history = useHistory();
 
-  authRef.onAuthStateChanged((user) => {
-    return user ? setIsLoggedIn(true) : setIsLoggedIn(false);
-  });
+  useEffect(() => {
+    // history.push('/');
+    authRef.onAuthStateChanged((user) => {
+      return user ? setIsLoggedIn(true) : setIsLoggedIn(false);
+    });
+
+    return signOut;
+  }, []);
 
   const signOut = () => {
     authRef.signOut()
@@ -25,22 +31,29 @@ export const App = (props: any) => {
   };
 
   return (
-    <div className="App">
-      {!isLoggedIn ? (
-        <>
-          <Login/>
-        </>
-      ) : (
-        <>
-          <Menubar/>
-          <Router> {/*router-outlet*/}
-              <Route path={'/'} component={Home}/>
-              <Route path={'/events'} component={Events}/>
-          </Router>
-          <div><Link className={'footer'} onClick={signOut}>Sign out</Link></div>
-        </>
-      )}
-    </div>
+    <BrowserRouter>
+      <div className={'app-root'}>
+        {!isLoggedIn ? (
+          <>
+            <Login/>
+          </>
+        ) : (
+          <>
+            <Menubar/>
+            <div>
+              <Switch>
+                <Route path={'/events'} component={Events}/>
+                <Route path={'/'} exact={true} component={Home}/>
+              </Switch>
+            </div>
+
+            <div>
+              <MatLink className={'footer'} onClick={signOut}>Sign out</MatLink>
+            </div>
+          </>
+        )}
+      </div>
+    </BrowserRouter>
   );
 
 };

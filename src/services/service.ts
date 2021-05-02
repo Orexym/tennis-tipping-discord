@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { authRef } from '../../firebase';
-import api from '../../api';
+import axios, { AxiosResponse } from 'axios';
+import api from '../api';
+import { authRef } from '../firebase';
 
 export const createToken = async () => {
   const user = authRef.currentUser;
@@ -13,14 +13,10 @@ export const createToken = async () => {
   };
 };
 
-export const getPhonebookEntries = async () => {
+export const getTennisEvents = async (): Promise<AxiosResponse> => {
   const header = await createToken();
-  try {
-    const res = await axios.get(api.rapidApi.url, header);
-    return res.data;
-  } catch (e) {
-    console.error(e);
-  }
+  console.log(api);
+  return axios.get(`${api.backend.url}/events`, header);
 };
 
 /*export const addToPhonebook = async (payload: any) => {
@@ -33,12 +29,17 @@ export const getPhonebookEntries = async () => {
   }
 };*/
 
-export const registerNotifications = async () => {
+export const registerNotifications = async (socket: WebSocket) => {
   const header = await createToken();
   try {
-    // const ws = new WebSocket(api.backend.wss);
-    // const res = await axios.post(api.backend.url, payload, header);
-    // return res.data;
+    return new Promise<any>((resolve, reject) => {
+      console.log("Help");
+      if (socket.readyState == WebSocket.OPEN) {
+        socket.send('Hello Server!');
+        resolve(true);
+      }
+    });
+
   } catch (e) {
     console.error(e);
   }

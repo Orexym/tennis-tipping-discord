@@ -3,8 +3,8 @@ const api = {
     url: ''
   },
   backend: {
-    url: '',
-    wss: ''
+    url: 'http://' + process.env.REACT_APP_BACKEND_URL || '',
+    wss: 'ws://' + process.env.REACT_APP_BACKEND_URL || ''
   }
 };
 
